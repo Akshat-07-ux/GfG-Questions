@@ -8,22 +8,24 @@ using namespace std;
 // } Driver Code Ends
 // User function template for C++
 class Solution {
-  public:
+ public:
     // Note that the size of the array is n-1
     int missingNumber(int n, vector<int>& arr) {
-        // Calculate the expected sum of numbers from 1 to n
-        int expected_sum = n * (n + 1) / 2;
+        // Calculate the sum of first n natural numbers
+        int totalSum = n * (n + 1) / 2;
         
-        // Calculate the actual sum of the array
-        int actual_sum = 0;
-        for (int num : arr) {
-            actual_sum += num;
+        // Calculate the sum of elements in the array
+        int arraySum = 0;
+        for (int i = 0; i < n - 1; i++) {
+            arraySum += arr[i];
         }
         
-        // The difference is the missing number
-        return expected_sum - actual_sum;
+        // The missing number is the difference between the total sum and the array sum
+        return totalSum - arraySum;
     }
 };
+
+
 
 //{ Driver Code Starts.
 
