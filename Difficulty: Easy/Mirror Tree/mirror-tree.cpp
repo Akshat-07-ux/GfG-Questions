@@ -138,6 +138,12 @@ public:
     }
 };
 
+// Helper function to create a new Node.
+Node* newNode(int data) {
+    Node* node = new Node(data);
+    return node;
+}
+
 //{ Driver Code Starts.
 
 /* Driver program to test size function*/
