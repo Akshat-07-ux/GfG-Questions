@@ -2,31 +2,32 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+
 // } Driver Code Ends
 
-class Solution{
-public:
+class Solution {
+  public:
     // Function to reverse words in a given string.
-    string reverseWords(string S) 
-    { 
+    string reverseWords(string str) {
+        // Split the string based on '.' and store the words in a vector.
         vector<string> words;
-        stringstream ss(S);
+        stringstream ss(str);
         string word;
-
-        // Split the string into words using '.' as the delimiter
+        
+        // Extract each word and store in the vector.
         while (getline(ss, word, '.')) {
             words.push_back(word);
         }
         
-        // Reverse the order of words
+        // Reverse the vector of words.
         reverse(words.begin(), words.end());
         
-        // Join the words with '.' as the separator
+        // Join the words back into a string with '.' as a separator.
         string result;
-        for (size_t i = 0; i < words.size(); ++i) {
+        for (int i = 0; i < words.size(); i++) {
             result += words[i];
-            if (i < words.size() - 1) {
-                result += '.';
+            if (i != words.size() - 1) {
+                result += ".";
             }
         }
         
@@ -35,16 +36,14 @@ public:
 };
 
 //{ Driver Code Starts.
-int main() 
-{
+int main() {
     int t;
     cin >> t;
-    while (t--) 
-    {
+    while (t--) {
         string s;
         cin >> s;
         Solution obj;
-        cout<<obj.reverseWords(s)<<endl;
+        cout << obj.reverseWords(s) << endl;
     }
 }
 // } Driver Code Ends
