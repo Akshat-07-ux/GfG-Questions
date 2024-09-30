@@ -93,47 +93,63 @@ struct Node {
 };
 */
 class Solution {
-private:
-    // Helper function to perform inorder traversal and store elements in a vector
+public:
+    // Helper function to perform inorder traversal of the BST
     void inorderTraversal(Node* root, vector<int>& elements) {
-        if (root == nullptr) return;
-        
+        if (root == NULL) return;
+
+        // Traverse left subtree
         inorderTraversal(root->left, elements);
+        
+        // Visit the current node
         elements.push_back(root->data);
+        
+        // Traverse right subtree
         inorderTraversal(root->right, elements);
     }
-    
-    // Helper function to merge two sorted vectors
-    vector<int> mergeSortedVectors(const vector<int>& v1, const vector<int>& v2) {
-        vector<int> result;
+
+    // Function to merge two sorted arrays
+    vector<int> mergeSortedArrays(vector<int>& arr1, vector<int>& arr2) {
+        vector<int> merged;
         int i = 0, j = 0;
+        int m = arr1.size(), n = arr2.size();
         
-        while (i < v1.size() && j < v2.size()) {
-            if (v1[i] <= v2[j]) {
-                result.push_back(v1[i++]);
+        // Merge both sorted arrays
+        while (i < m && j < n) {
+            if (arr1[i] < arr2[j]) {
+                merged.push_back(arr1[i]);
+                i++;
             } else {
-                result.push_back(v2[j++]);
+                merged.push_back(arr2[j]);
+                j++;
             }
         }
         
-        while (i < v1.size()) result.push_back(v1[i++]);
-        while (j < v2.size()) result.push_back(v2[j++]);
+        // If there are remaining elements in arr1
+        while (i < m) {
+            merged.push_back(arr1[i]);
+            i++;
+        }
         
-        return result;
+        // If there are remaining elements in arr2
+        while (j < n) {
+            merged.push_back(arr2[j]);
+            j++;
+        }
+        
+        return merged;
     }
 
-public:
     // Function to return a list of integers denoting the node
     // values of both the BST in a sorted order.
     vector<int> merge(Node *root1, Node *root2) {
-        vector<int> elements1, elements2;
-        
-        // Perform inorder traversal on both BSTs
-        inorderTraversal(root1, elements1);
-        inorderTraversal(root2, elements2);
-        
-        // Merge the two sorted vectors
-        return mergeSortedVectors(elements1, elements2);
+        // Step 1: Get the inorder traversal of both trees
+        vector<int> inorder1, inorder2;
+        inorderTraversal(root1, inorder1);
+        inorderTraversal(root2, inorder2);
+
+        // Step 2: Merge the two sorted arrays
+        return mergeSortedArrays(inorder1, inorder2);
     }
 };
 
