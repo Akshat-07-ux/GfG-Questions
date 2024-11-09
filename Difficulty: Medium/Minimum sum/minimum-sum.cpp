@@ -6,7 +6,7 @@ using namespace std;
 // } Driver Code Ends
 // User function template for C++
 
-class Solution {
+class Solution{
 public:
     std::string minSum(std::vector<int>& arr) {
         int count[10] = {0};
