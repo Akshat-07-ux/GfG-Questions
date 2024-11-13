@@ -1,107 +1,52 @@
 //{ Driver Code Starts
-#include<iostream>
+#include <iostream>
 
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 
 /* Link list Node */
-struct Node
-{
+struct Node {
     int data;
-    struct Node *next;
-    Node(int x)
-    {
+    struct Node* next;
+
+    Node(int x) {
         data = x;
         next = NULL;
     }
 };
 
-int intersectPoint(struct Node* head1, struct Node* head2);
-
-vector<int> take(int n){
-    vector<int> ans(n);
-    for(int i=0;i<n;i++) cin>>ans[i];
-    return ans;
+vector<int> take() {
+    vector<int> arr;
+    string input;
+    getline(cin, input);
+    stringstream ss(input);
+    int number;
+    while (ss >> number) {
+        arr.push_back(number);
+    }
+    return arr;
 }
 
-Node* inputList(int size, vector<int> v)
-{
-    if(size==0) return NULL;
-    
+Node* inputList(int size, vector<int> v) {
+    if (size == 0)
+        return NULL;
+
     int val = v[0];
-    
-    Node *head = new Node(val);
-    Node *tail = head;
-    
-    for(int i=0; i<size-1; i++)
-    {
-        val = v[i+1];
+
+    Node* head = new Node(val);
+    Node* tail = head;
+
+    for (int i = 0; i < size - 1; i++) {
+        val = v[i + 1];
         tail->next = new Node(val);
         tail = tail->next;
     }
-    
+
     return head;
-}
-
-/* Driver program to test above function*/
-int main()
-{
-    srand(time(0));
-    int T,n1,n2,n3;
-
-    cin>>T;
-    while(T--)
-    {
-        cin>>n1>>n2>>n3;
-        
-        int p = rand()%3;
-        
-        vector<int> v1 = take(n1);
-        vector<int> v2 = take(n2);
-        vector<int> v3 = take(n3);
-        
-        
-        Node* head1 = NULL;
-        Node* head2 = NULL;
-        Node* common = NULL;
-        
-        if(p==0){
-            common = inputList(n3, v3);
-            head1 = inputList(n1, v1);
-            head2 = inputList(n2, v2);
-        }
-        else if(p==1){
-            
-            head1 = inputList(n1, v1);
-            common = inputList(n3, v3);
-            head2 = inputList(n2, v2);
-        }
-         else{
-            
-            head1 = inputList(n1, v1);
-            head2 = inputList(n2, v2);
-            common = inputList(n3, v3);
-        }
-        
-        Node* temp = head1;
-        while(temp!=NULL && temp->next != NULL)
-            temp = temp->next;
-        if(temp!=NULL) temp->next = common;
-        
-        temp = head2;
-        while(temp!=NULL && temp->next != NULL)
-            temp = temp->next;
-        if(temp!=NULL) temp->next = common;
-        
-        cout << intersectPoint(head1, head2) << endl;
-    }
-    return 0;
 }
 
 
 // } Driver Code Ends
-
-
 /* Linked List Node
 struct Node {
   int data;
@@ -112,45 +57,70 @@ struct Node {
   }
 }; */
 
-//Function to find intersection point in Y shaped Linked Lists.
-int getLength(Node* head) {
-    int length = 0;
-    while (head != nullptr) {
-        length++;
-        head = head->next;
+class Solution {
+  public:
+    // Function to find intersection point in Y shaped Linked Lists.
+    int intersectPoint(Node* head1, Node* head2) {
+        if (!head1 || !head2) return -1;
+
+        Node* ptr1 = head1;
+        Node* ptr2 = head2;
+
+        // Traverse until the pointers meet or reach the end.
+        while (ptr1 != ptr2) {
+            // Move ptr1 to the next node or to the head of the second list.
+            ptr1 = (ptr1 == nullptr) ? head2 : ptr1->next;
+            // Move ptr2 to the next node or to the head of the first list.
+            ptr2 = (ptr2 == nullptr) ? head1 : ptr2->next;
+        }
+
+        // If they meet at some node, return the data of that node.
+        // Otherwise, they both will be nullptr (end of the lists), return -1.
+        return (ptr1 != nullptr) ? ptr1->data : -1;
     }
-    return length;
+};
+
+
+//{ Driver Code Starts.
+
+/* Driver program to test above function*/
+int main() {
+    srand(time(0));
+    int T, n1, n2, n3;
+
+    cin >> T;
+    cin.ignore();
+    while (T--) {
+
+        vector<int> v1 = take();
+        vector<int> v2 = take();
+        vector<int> v3 = take();
+        int n1 = v1.size(), n2 = v2.size(), n3 = v3.size();
+
+        Node* head1 = NULL;
+        Node* head2 = NULL;
+        Node* common = NULL;
+
+        head1 = inputList(n1, v1);
+        head2 = inputList(n2, v2);
+        common = inputList(n3, v3);
+
+        Node* temp = head1;
+        while (temp != NULL && temp->next != NULL)
+            temp = temp->next;
+        if (temp != NULL)
+            temp->next = common;
+
+        temp = head2;
+        while (temp != NULL && temp->next != NULL)
+            temp = temp->next;
+        if (temp != NULL)
+            temp->next = common;
+        Solution ob;
+        cout << ob.intersectPoint(head1, head2) << endl;
+        cout << "~" << endl;
+    }
+    return 0;
 }
 
-// Function to get the intersection point of two linked lists
-int intersectPoint(Node* head1, Node* head2) {
-    // Calculate the lengths of both linked lists
-    int len1 = getLength(head1);
-    int len2 = getLength(head2);
-
-    // Move the pointer of the longer list ahead by the difference in lengths
-    Node* curr1 = head1;
-    Node* curr2 = head2;
-    if (len1 > len2) {
-        for (int i = 0; i < len1 - len2; i++) {
-            curr1 = curr1->next;
-        }
-    } else {
-        for (int i = 0; i < len2 - len1; i++) {
-            curr2 = curr2->next;
-        }
-    }
-
-    // Traverse both lists together until the pointers meet at the intersection point
-    while (curr1 != nullptr && curr2 != nullptr) {
-        if (curr1 == curr2) {
-            return curr1->data;  // Intersection point found
-        }
-        curr1 = curr1->next;
-        curr2 = curr2->next;
-    }
-
-    return -1;  // No intersection point found
-}
-
-
+// } Driver Code Ends
