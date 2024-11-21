@@ -7,21 +7,20 @@ using namespace std;
 // } Driver Code Ends
 
 class Solution {
-public:
-    int stockBuyAndSell(std::vector<int> &prices) {
+ public:
+    int maximumProfit(vector<int> &prices) {
         int maxProfit = 0;
-        
-        // Traverse through the prices array
-        for (int i = 1; i < prices.size(); i++) {
-            // If there's a rise in price, we add the profit
+        for (size_t i = 1; i < prices.size(); i++) {
+            // If the price on the current day is greater than the previous day, 
+            // we can add the difference to the profit.
             if (prices[i] > prices[i - 1]) {
                 maxProfit += prices[i] - prices[i - 1];
             }
         }
-        
         return maxProfit;
     }
 };
+
 
 //{ Driver Code Starts.
 int main() {
@@ -40,7 +39,7 @@ int main() {
         }
         int n = arr.size();
         Solution ob;
-        int res = ob.stockBuyAndSell(arr);
+        int res = ob.maximumProfit(arr);
         cout << res;
 
         cout << "\n";
