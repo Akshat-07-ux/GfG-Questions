@@ -9,31 +9,28 @@ using namespace std;
 
 class Solution {
   public:
-    int getMinDiff(int k, vector<int> &arr) {
+    int getMinDiff(int k, vector<int>& arr) {
         int n = arr.size();
-        if (n == 1) return 0; // If there's only one tower, no difference.
+        if (n == 1) return 0; // If there's only one tower, the difference is zero.
 
-        // Step 1: Sort the array
+        // Sort the array to work with ordered heights
         sort(arr.begin(), arr.end());
 
-        // Step 2: Calculate the initial difference
-        int diff = arr[n - 1] - arr[0];
+        // Initial difference between the largest and smallest towers
+        int ans = arr[n - 1] - arr[0];
 
-        // Step 3: Iterate through the array and compute minimum difference
-        int minHeight, maxHeight;
-        for (int i = 0; i < n - 1; i++) {
-            // If reducing arr[i+1] - k results in negative height, skip it
-            if (arr[i + 1] < k) continue;
+        int smallest = arr[0] + k;
+        int largest = arr[n - 1] - k;
 
-            // Calculate the new minimum and maximum heights
-            minHeight = min(arr[0] + k, arr[i + 1] - k);
-            maxHeight = max(arr[i] + k, arr[n - 1] - k);
+        if (smallest > largest) swap(smallest, largest);
 
-            // Update the difference
-            diff = min(diff, maxHeight - minHeight);
+        for (int i = 0; i < n - 1; ++i) {
+            int minHeight = min(smallest, arr[i + 1] - k);
+            int maxHeight = max(largest, arr[i] + k);
+            ans = min(ans, maxHeight - minHeight);
         }
 
-        return diff;
+        return ans;
     }
 };
 
