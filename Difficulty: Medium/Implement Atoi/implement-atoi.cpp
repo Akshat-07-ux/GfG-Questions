@@ -1,54 +1,56 @@
 //{ Driver Code Starts
-//Initial template for C++
-
 #include <bits/stdc++.h>
 using namespace std;
 
+
 // } Driver Code Ends
-//User function template for C++
-
-class Solution{
-  public:
-    int atoi(string s) {
-        if (s.empty()) return -1;
-
-        int result = 0;
-        int sign = 1;
-        int startIndex = 0;
-
-        // Check for sign
-        if (s[0] == '-') {
-            sign = -1;
-            startIndex = 1; // Start parsing from the next character
+class Solution {
+ public:
+    int myAtoi(char *s) {
+        int i = 0;  // Pointer to traverse the string
+        int sign = 1;  // Default sign is positive
+        long result = 0;  // Result as a long to handle overflow temporarily
+        
+        // Step 1: Skip leading whitespaces
+        while (s[i] == ' ') {
+            i++;
         }
 
-        // Iterate through each character in the string
-        for (int i = startIndex; i < s.length(); i++) {
-            if (s[i] >= '0' && s[i] <= '9') {
-                result = result * 10 + (s[i] - '0');
-            } else {
-                // If a non-numeric character is found, return -1
-                return -1;
+        // Step 2: Check for a sign
+        if (s[i] == '-' || s[i] == '+') {
+            sign = (s[i] == '-') ? -1 : 1;
+            i++;
+        }
+
+        // Step 3: Read digits and form the number
+        while (s[i] >= '0' && s[i] <= '9') {
+            result = result * 10 + (s[i] - '0');
+
+            // Step 4: Check for overflow and underflow
+            if (result * sign > INT_MAX) {
+                return INT_MAX;
+            } 
+            if (result * sign < INT_MIN) {
+                return INT_MIN;
             }
+            i++;
         }
 
-        // Apply the sign to the result
-        return result * sign;
+        return (int)(result * sign);
     }
 };
 
 //{ Driver Code Starts.
-int main()
-{
-	int t;
-	cin>>t;
-	while(t--)
-	{
-		string s;
-		cin>>s;
-		Solution ob;
-		int ans=ob.atoi(s);
-		cout<<ans<<endl;
-	}
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        char s[20];
+        cin >> s;
+        Solution ob;
+        int ans = ob.myAtoi(s);
+        cout << ans << endl;
+        cout << "~" << endl;
+    }
 }
 // } Driver Code Ends
