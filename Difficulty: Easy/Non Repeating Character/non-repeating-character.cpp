@@ -5,54 +5,56 @@ using namespace std;
 
 // } Driver Code Ends
 
-class Solution{
-public:
+class Solution {
+ public:
     // Function to find the first non-repeating character in a string.
-    char nonrepeatingCharacter(string S) {
-        unordered_map<char, int> freqMap;
-        
-        // Count the frequency of each character in the string
-        for (char ch : S) {
-            freqMap[ch]++;
+    char nonRepeatingChar(string &s) {
+        // Step 1: Create a frequency map to count occurrences of each character
+        unordered_map<char, int> freq;
+
+        // Step 2: Populate the frequency map
+        for (char c : s) {
+            freq[c]++;
         }
 
-        // Find the first character with a frequency of 1
-        for (char ch : S) {
-            if (freqMap[ch] == 1) {
-                return ch;
+        // Step 3: Traverse the string to find the first character with frequency 1
+        for (char c : s) {
+            if (freq[c] == 1) {
+                return c; // Return the first non-repeating character
             }
         }
 
-        // If no non-repeating character is found, return '$'
+        // Step 4: If no non-repeating character is found, return '$'
         return '$';
     }
 };
 
-
 //{ Driver Code Starts.
 
 int main() {
-	
-	int T;
-	cin >> T;
-	
-	while(T--)
-	{
-	
-	    string S;
-	    cin >> S;
-	    Solution obj;
-        char ans = obj.nonrepeatingCharacter(S);
-        
-        if(ans != '$')
-	    cout << ans;
-        else cout << "-1";
-            
+
+    int T;
+    cin >> T;
+
+    while (T--) {
+
+        string S;
+        cin >> S;
+        Solution obj;
+        char ans = obj.nonRepeatingChar(S);
+
+        if (ans != '$')
+            cout << ans;
+        else
+            cout << "-1";
+
         cout << endl;
-	    
-	}
-	
-	return 0;
+
+        cout << "~"
+             << "\n";
+    }
+
+    return 0;
 }
 
 // } Driver Code Ends
