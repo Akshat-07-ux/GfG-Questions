@@ -5,51 +5,65 @@ using namespace std;
 
 // } Driver Code Ends
 class Solution {
-  public:
-    // arr[]: Input Array
-    // N : Size of the Array arr[]
-    // Function to count inversions in the array.
-    long long int inversionCount(long long arr[], int n) {
-        return mergeSort(arr, 0, n - 1);
-    }
+ public:
+    // Helper function to merge two subarrays and count inversions.
+    int mergeAndCount(vector<int> &arr, vector<int> &temp, int left, int mid, int right) {
+        int i = left;    // Starting index for left subarray
+        int j = mid + 1; // Starting index for right subarray
+        int k = left;    // Starting index for temporary array
+        int inv_count = 0;
 
-private:
-    long long mergeSort(long long arr[], int left, int right) {
-        long long inv_count = 0;
-        if (left < right) {
-            int mid = left + (right - left) / 2;
-            
-            inv_count += mergeSort(arr, left, mid);
-            inv_count += mergeSort(arr, mid + 1, right);
-            inv_count += merge(arr, left, mid, right);
-        }
-        return inv_count;
-    }
-    
-    long long merge(long long arr[], int left, int mid, int right) {
-        int i = left, j = mid + 1, k = 0;
-        long long inv_count = 0;
-        long long temp[right - left + 1];
-        
+        // Merge the two subarrays
         while (i <= mid && j <= right) {
             if (arr[i] <= arr[j]) {
                 temp[k++] = arr[i++];
             } else {
                 temp[k++] = arr[j++];
-                inv_count += mid - i + 1;
+                // All elements left in the left subarray are greater than arr[j]
+                inv_count += (mid - i + 1);
             }
         }
-        
-        while (i <= mid)
+
+        // Copy the remaining elements of the left subarray, if any
+        while (i <= mid) {
             temp[k++] = arr[i++];
-        
-        while (j <= right)
+        }
+
+        // Copy the remaining elements of the right subarray, if any
+        while (j <= right) {
             temp[k++] = arr[j++];
-        
-        for (i = left, k = 0; i <= right; i++, k++)
-            arr[i] = temp[k];
-        
+        }
+
+        // Copy the sorted subarray back into the original array
+        for (i = left; i <= right; i++) {
+            arr[i] = temp[i];
+        }
+
         return inv_count;
+    }
+
+    // Function to use merge sort and count inversions
+    int mergeSortAndCount(vector<int> &arr, vector<int> &temp, int left, int right) {
+        int mid, inv_count = 0;
+        if (left < right) {
+            mid = (left + right) / 2;
+
+            // Count inversions in the left subarray
+            inv_count += mergeSortAndCount(arr, temp, left, mid);
+
+            // Count inversions in the right subarray
+            inv_count += mergeSortAndCount(arr, temp, mid + 1, right);
+
+            // Count inversions while merging
+            inv_count += mergeAndCount(arr, temp, left, mid, right);
+        }
+        return inv_count;
+    }
+
+    // Function to count inversions in the array.
+    int inversionCount(vector<int> &arr) {
+        vector<int> temp(arr.size());
+        return mergeSortAndCount(arr, temp, 0, arr.size() - 1);
     }
 };
 
@@ -57,19 +71,21 @@ private:
 
 int main() {
 
-    long long T;
+    int T;
     cin >> T;
-
+    cin.ignore();
     while (T--) {
-        int N;
-        cin >> N;
-
-        long long A[N];
-        for (long long i = 0; i < N; i++) {
-            cin >> A[i];
-        }
+        int n;
+        vector<int> a;
+        string input;
+        getline(cin, input);
+        stringstream ss(input);
+        int num;
+        while (ss >> num)
+            a.push_back(num);
         Solution obj;
-        cout << obj.inversionCount(A, N) << endl;
+        cout << obj.inversionCount(a) << endl;
+        cout << "~" << endl;
     }
 
     return 0;
