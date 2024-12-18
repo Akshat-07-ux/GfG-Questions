@@ -10,38 +10,39 @@ using namespace std;
 
 class Solution {
   public:
-    // Function to check if it is possible to place k cows with at least 'dist' distance apart
-    bool canPlaceCows(vector<int> &stalls, int k, int dist) {
-        int count = 1; // Place the first cow in the first stall
-        int lastPos = stalls[0]; // Position of the last placed cow
+    // Function to check if it is possible to place k cows with a minimum distance of 'dist'
+    bool canPlaceCows(const vector<int>& stalls, int k, int dist) {
+        int cowsPlaced = 1; // Place the first cow at the first stall
+        int lastPosition = stalls[0];
 
-        for (int i = 1; i < stalls.size(); i++) {
-            if (stalls[i] - lastPos >= dist) {
-                count++;
-                lastPos = stalls[i]; // Place the next cow here
-                if (count == k) {
-                    return true;
+        for (int i = 1; i < stalls.size(); ++i) {
+            if (stalls[i] - lastPosition >= dist) {
+                cowsPlaced++;
+                lastPosition = stalls[i];
+
+                if (cowsPlaced == k) {
+                    return true; // Successfully placed all cows
                 }
             }
         }
-        return false;
+        return false; // Not possible to place all cows
     }
 
     int aggressiveCows(vector<int> &stalls, int k) {
-        sort(stalls.begin(), stalls.end()); // Sort the stall positions
+        // Sort the stall positions
+        sort(stalls.begin(), stalls.end());
 
-        int low = 1;
-        int high = stalls.back() - stalls.front();
+        // Binary search on the minimum distance
+        int low = 1; // Minimum possible distance
+        int high = stalls.back() - stalls.front(); // Maximum possible distance
         int result = 0;
 
-        // Binary search on the distance
         while (low <= high) {
             int mid = low + (high - low) / 2;
-            
-            // Check if it's possible to place all cows with at least 'mid' distance
+
             if (canPlaceCows(stalls, k, mid)) {
-                result = mid; // Update the result as 'mid' is feasible
-                low = mid + 1; // Try for a larger distance
+                result = mid; // Update the result and try for a larger distance
+                low = mid + 1;
             } else {
                 high = mid - 1; // Try for a smaller distance
             }
