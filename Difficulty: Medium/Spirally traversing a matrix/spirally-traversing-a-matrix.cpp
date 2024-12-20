@@ -5,39 +5,40 @@ using namespace std;
 
 // } Driver Code Ends
 class Solution {
-public:
-    vector<int> spirallyTraverse(vector<vector<int>> &matrix) {
+ public:
+    vector<int> spirallyTraverse(vector<vector<int> > &mat) {
         vector<int> result;
-        if (matrix.empty()) return result;
 
-        int top = 0, bottom = matrix.size() - 1;
-        int left = 0, right = matrix[0].size() - 1;
+        int n = mat.size();      // Number of rows
+        int m = mat[0].size();  // Number of columns
+
+        int top = 0, bottom = n - 1, left = 0, right = m - 1;
 
         while (top <= bottom && left <= right) {
             // Traverse from left to right
             for (int i = left; i <= right; ++i) {
-                result.push_back(matrix[top][i]);
+                result.push_back(mat[top][i]);
             }
             ++top;
 
             // Traverse from top to bottom
             for (int i = top; i <= bottom; ++i) {
-                result.push_back(matrix[i][right]);
+                result.push_back(mat[i][right]);
             }
             --right;
 
+            // Traverse from right to left, if there are rows remaining
             if (top <= bottom) {
-                // Traverse from right to left
                 for (int i = right; i >= left; --i) {
-                    result.push_back(matrix[bottom][i]);
+                    result.push_back(mat[bottom][i]);
                 }
                 --bottom;
             }
 
+            // Traverse from bottom to top, if there are columns remaining
             if (left <= right) {
-                // Traverse from bottom to top
                 for (int i = bottom; i >= top; --i) {
-                    result.push_back(matrix[i][left]);
+                    result.push_back(mat[i][left]);
                 }
                 ++left;
             }
@@ -55,9 +56,10 @@ int main() {
     while (t--) {
         int r, c;
         cin >> r >> c;
-        vector<vector<int>> matrix(r, vector<int>(c, 0));
+        vector<vector<int>> matrix(r);
 
         for (int i = 0; i < r; i++) {
+            matrix[i].assign(c, 0);
             for (int j = 0; j < c; j++) {
                 cin >> matrix[i][j];
             }
@@ -68,6 +70,9 @@ int main() {
         for (int i = 0; i < result.size(); ++i)
             cout << result[i] << " ";
         cout << endl;
+
+        cout << "~"
+             << "\n";
     }
     return 0;
 }
