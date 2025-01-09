@@ -5,29 +5,27 @@ using namespace std;
 
 // } Driver Code Ends
 class Solution {
-    public:
-    // Function to find a continuous sub-array which adds up to a given number.
-    vector<int> subarraySum(vector<int> arr, int n, long long s) {
-        long long currentSum = 0;
-        int start = 0;
+public:
+    vector<int> subarraySum(vector<int> &arr, int target) {
+        int left = 0;
+        int currentSum = 0;
 
-        for (int end = 0; end < n; end++) {
-            // Add the current element to the sum
-            currentSum += arr[end];
-
-            // If the current sum exceeds the target sum, remove elements from the start
-            while (currentSum > s && start < end) {
-                currentSum -= arr[start];
-                start++;
+        for (int right = 0; right < arr.size(); right++) {
+            currentSum += arr[right];  // Expand the window by adding the right element
+            
+            // Shrink the window until currentSum is less than or equal to target
+            while (currentSum > target && left <= right) {
+                currentSum -= arr[left];
+                left++;
             }
 
-            // If we found the target sum, return the subarray indices
-            if (currentSum == s) {
-                return {start + 1, end + 1};  // Adding 1 for 1-based indexing
+            // If a subarray with the target sum is found, return its 1-based indices
+            if (currentSum == target) {
+                return {left + 1, right + 1};
             }
         }
 
-        // If no subarray is found, return {-1}
+        // If no such subarray is found, return [-1]
         return {-1};
     }
 };
@@ -37,24 +35,30 @@ class Solution {
 int main() {
     int t;
     cin >> t;
+    cin.ignore();
     while (t--) {
-        int n;
-        long long s;
-        cin >> n >> s;
-        vector<int> arr(n);
-        // int arr[n];
-        const int mx = 1e9;
-        for (int i = 0; i < n; i++) {
-            cin >> arr[i];
-        }
-        Solution ob;
-        vector<int> res;
-        res = ob.subarraySum(arr, n, s);
+        vector<int> arr;
+        int d;
+        string input;
 
-        for (int i = 0; i < res.size(); i++)
-            cout << res[i] << " ";
-        cout << endl;
+        getline(cin, input);
+        stringstream ss(input);
+        int number;
+        while (ss >> number) {
+            arr.push_back(number);
+        }
+
+        cin >> d;
+        cin.ignore();
+
+        Solution ob;
+        vector<int> result = ob.subarraySum(arr, d);
+        for (int i : result) {
+            cout << i << " ";
+        }
+        cout << "\n~\n";
     }
     return 0;
 }
+
 // } Driver Code Ends
