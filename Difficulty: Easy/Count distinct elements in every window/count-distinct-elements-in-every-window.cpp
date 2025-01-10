@@ -1,43 +1,36 @@
 //{ Driver Code Starts
+// Initial Template for C++
 #include <bits/stdc++.h>
 using namespace std;
 
 
-
 // } Driver Code Ends
 
-class Solution{
-public:
-    vector<int> countDistinct(int A[], int n, int k) {
-        vector<int> result; // To store the result of distinct counts for each window
-        unordered_map<int, int> freq_map; // To store the frequency of elements in the current window
-        int distinct_count = 0; // To track the number of distinct elements in the window
+class Solution {
+  public:
+    vector<int> countDistinct(vector<int> &arr, int k) {
+        vector<int> result;
+        unordered_map<int, int> freqMap;
 
-        // Process the first window of size k
-        for (int i = 0; i < k; i++) {
-            if (freq_map[A[i]] == 0) {
-                distinct_count++; // New distinct element
-            }
-            freq_map[A[i]]++; // Increment the count of the current element
+        // Initialize the frequency map for the first window
+        for (int i = 0; i < k; ++i) {
+            freqMap[arr[i]]++;
         }
-        result.push_back(distinct_count); // Store the distinct count for the first window
+        // Store the count of distinct elements for the first window
+        result.push_back(freqMap.size());
 
-        // Process the rest of the windows
-        for (int i = k; i < n; i++) {
-            // Remove the element that is sliding out of the window
-            if (freq_map[A[i - k]] == 1) {
-                distinct_count--; // It was the only occurrence of this element
+        // Slide the window through the array
+        for (int i = k; i < arr.size(); ++i) {
+            // Remove the element that is going out of the window
+            freqMap[arr[i - k]]--;
+            if (freqMap[arr[i - k]] == 0) {
+                freqMap.erase(arr[i - k]);
             }
-            freq_map[A[i - k]]--; // Decrease the frequency of the outgoing element
+            // Add the new element that is coming into the window
+            freqMap[arr[i]]++;
 
-            // Add the new element coming into the window
-            if (freq_map[A[i]] == 0) {
-                distinct_count++; // New distinct element
-            }
-            freq_map[A[i]]++; // Increment the count of the new element
-
-            // Store the distinct count for the current window
-            result.push_back(distinct_count);
+            // Store the count of distinct elements in the current window
+            result.push_back(freqMap.size());
         }
 
         return result;
@@ -45,24 +38,34 @@ public:
 };
 
 //{ Driver Code Starts.
-int main()
-{
+
+int main() {
+
     int t;
     cin >> t;
-    while (t--)
-    {
-
-        int n, k;
-        cin >> n >> k;
-        int a[n];
-        for (int i = 0; i < n; i++) 
-        	cin >> a[i];
+    cin.ignore();
+    while (t--) {
+        vector<int> arr;
+        string input;
+        getline(cin, input);
+        stringstream ss(input);
+        int number;
+        while (ss >> number) {
+            arr.push_back(number);
+        }
+        string ks;
+        getline(cin, ks);
+        int k = stoi(ks);
         Solution obj;
-        vector <int> result = obj.countDistinct(a, n, k);
-        for (int i : result) 
-        	cout << i << " ";
+        vector<int> res = obj.countDistinct(arr, k);
+        for (auto it : res)
+            cout << it << " ";
         cout << endl;
+        cout << "~"
+             << "\n";
     }
+
     return 0;
 }
+
 // } Driver Code Ends
