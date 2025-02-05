@@ -1,15 +1,14 @@
 //{ Driver Code Starts
-// Initial Template for C++
-
 #include <bits/stdc++.h>
 using namespace std;
 
 /* A binary tree node has data, pointer to left child
    and a pointer to right child */
-struct Node {
+class Node {
+  public:
     int data;
-    struct Node *left;
-    struct Node *right;
+    Node *left;
+    Node *right;
 
     Node(int x) {
         data = x;
@@ -20,14 +19,16 @@ struct Node {
 // Function to Build Tree
 Node *buildTree(string str) {
     // Corner Case
-    if (str.length() == 0 || str[0] == 'N') return NULL;
+    if (str.length() == 0 || str[0] == 'N')
+        return NULL;
 
     // Creating vector of strings from input
-    // string after spliting by space
+    // string after splitting by space
     vector<string> ip;
 
     istringstream iss(str);
-    for (string str; iss >> str;) ip.push_back(str);
+    for (string str; iss >> str;)
+        ip.push_back(str);
 
     // Create the root of the tree
     Node *root = new Node(stoi(ip[0]));
@@ -59,7 +60,8 @@ Node *buildTree(string str) {
 
         // For the right child
         i++;
-        if (i >= ip.size()) break;
+        if (i >= ip.size())
+            break;
         currVal = ip[i];
 
         // If the right child is not null
@@ -77,72 +79,65 @@ Node *buildTree(string str) {
     return root;
 }
 
-/* Helper function to test mirror(). Given a binary
-   search tree, print out its data elements in
-   increasing sorted order.*/
-void inOrder(struct Node *node) {
-    if (node == NULL) return;
+// Generate output as level order of tree
+string levelOrder(Node *root) {
+    if (root == nullptr)
+        return "N\n";
 
-    inOrder(node->left);
-    printf("%d ", node->data);
+    string str;
+    queue<Node *> qq;
+    qq.push(root);
 
-    inOrder(node->right);
+    while (!qq.empty()) {
+        Node *curr = qq.front();
+        qq.pop();
+
+        if (curr == nullptr) {
+            str += "N ";
+            continue;
+        }
+        str += (to_string(curr->data) + " ");
+        qq.push(curr->left);
+        qq.push(curr->right);
+    }
+    while (!str.empty() && !isdigit(str.back())) {
+        str.pop_back();
+    }
+    return str;
 }
 
 
 // } Driver Code Ends
-// function Template for C++
-
-/* A binary tree node has data, pointer to left child
-   and a pointer to right child /
-struct Node
-{
+// Full function Template for C++
+/*
+class Node {
+public:
     int data;
-    struct Node* left;
-    struct Node* right;
+    Node *left;
+    Node *right;
 
-    Node(int x){
+    Node(int x) {
         data = x;
         left = right = NULL;
     }
-}; */
+};
+*/
 
 class Solution {
-public:
+ public:
     // Function to convert a binary tree into its mirror tree.
     void mirror(Node* node) {
-        // Base case: if node is null, return.
-        if (node == nullptr) {
-            return;
-        }
+        if (node == NULL) return;
 
-        // Recursively convert left and right subtrees into their mirrors.
+        // Swap the left and right child
+        swap(node->left, node->right);
+
+        // Recursively call for left and right subtrees
         mirror(node->left);
         mirror(node->right);
-
-        // Swap the left and right children of the current node.
-        Node* temp = node->left;
-        node->left = node->right;
-        node->right = temp;
-    }
-
-    // Function to perform inorder traversal and print the values.
-    void inorderTraversal(Node* node) {
-        if (node == nullptr) {
-            return;
-        }
-
-        inorderTraversal(node->left);   // Visit left subtree
-        cout << node->data << " ";     // Print node's data
-        inorderTraversal(node->right);  // Visit right subtree
     }
 };
 
-// Helper function to create a new Node.
-Node* newNode(int data) {
-    Node* node = new Node(data);
-    return node;
-}
 
 //{ Driver Code Starts.
 
@@ -156,10 +151,12 @@ int main() {
         Node *root = buildTree(str);
         Solution ob;
         ob.mirror(root);
-        inOrder(root);
+        cout << levelOrder(root);
         cout << "\n";
+        cout << "~\n";
     }
 
     return 0;
 }
+
 // } Driver Code Ends
