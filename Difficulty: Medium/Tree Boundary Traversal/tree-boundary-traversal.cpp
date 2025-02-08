@@ -4,38 +4,37 @@ using namespace std;
 #define MAX_HEIGHT 100000
 
 // Tree Node
-struct Node
-{
+class Node {
+  public:
     int data;
     Node* left;
     Node* right;
+
+    // Constructor to initialize a new node
+    Node(int val) {
+        data = val;
+        left = NULL;
+        right = NULL;
+    }
 };
 
 // Utility function to create a new Tree Node
-Node* newNode(int val)
-{
-    Node* temp = new Node;
-    temp->data = val;
-    temp->left = NULL;
-    temp->right = NULL;
-
-    return temp;
+Node* newNode(int val) {
+    return new Node(val);
 }
 
-
 // Function to Build Tree
-Node* buildTree(string str)
-{
+Node* buildTree(string str) {
     // Corner Case
-    if(str.length() == 0 || str[0] == 'N')
+    if (str.length() == 0 || str[0] == 'N')
         return NULL;
 
     // Creating vector of strings from input
-    // string after spliting by space
+    // string after splitting by space
     vector<string> ip;
 
     istringstream iss(str);
-    for(string str; iss >> str; )
+    for (string str; iss >> str;)
         ip.push_back(str);
 
     // Create the root of the tree
@@ -47,7 +46,7 @@ Node* buildTree(string str)
 
     // Starting from the second element
     int i = 1;
-    while(!queue.empty() && i < ip.size()) {
+    while (!queue.empty() && i < ip.size()) {
 
         // Get and remove the front of the queue
         Node* currNode = queue.front();
@@ -57,7 +56,7 @@ Node* buildTree(string str)
         string currVal = ip[i];
 
         // If the left child is not null
-        if(currVal != "N") {
+        if (currVal != "N") {
 
             // Create the left child for the current node
             currNode->left = newNode(stoi(currVal));
@@ -68,12 +67,12 @@ Node* buildTree(string str)
 
         // For the right child
         i++;
-        if(i >= ip.size())
+        if (i >= ip.size())
             break;
         currVal = ip[i];
 
         // If the right child is not null
-        if(currVal != "N") {
+        if (currVal != "N") {
 
             // Create the right child for the current node
             currNode->right = newNode(stoi(currVal));
@@ -88,88 +87,110 @@ Node* buildTree(string str)
 }
 
 
-
-
-
-
-
-
-
 // } Driver Code Ends
-/* A binary tree Node
-struct Node
-{
+/*
+// Tree Node
+class Node {
+  public:
     int data;
-    Node* left, * right;
-}; */
+    Node* left;
+    Node* right;
+
+    // Constructor to initialize a new node
+    Node(int val) {
+        data = val;
+        left = NULL;
+        right = NULL;
+    }
+};
+*/
 
 class Solution {
-
-private:
-    void leftBoundary(Node* root, vector<int>& result) {
-        if (!root || (!root->left && !root->right)) return;
-        result.push_back(root->data);
-        if (root->left) leftBoundary(root->left, result);
-        else leftBoundary(root->right, result);
+  private:
+    // Check if a node is a leaf
+    bool isLeaf(Node* node) {
+        return (node != NULL && node->left == NULL && node->right == NULL);
     }
     
-    void leaves(Node* root, vector<int>& result) {
-        if (!root) return;
-        if (!root->left && !root->right) {
-            result.push_back(root->data);
+    // Add left boundary nodes (excluding leaves)
+    void addLeftBoundary(Node* root, vector<int>& res) {
+        Node* cur = root->left;
+        while (cur) {
+            if (!isLeaf(cur)) res.push_back(cur->data);
+            if (cur->left) cur = cur->left;
+            else cur = cur->right;
+        }
+    }
+    
+    // Add leaf nodes
+    void addLeaves(Node* root, vector<int>& res) {
+        if (isLeaf(root)) {
+            res.push_back(root->data);
             return;
         }
-        leaves(root->left, result);
-        leaves(root->right, result);
+        if (root->left) addLeaves(root->left, res);
+        if (root->right) addLeaves(root->right, res);
     }
     
-    void rightBoundary(Node* root, vector<int>& result) {
-        if (!root || (!root->left && !root->right)) return;
-        if (root->right) rightBoundary(root->right, result);
-        else rightBoundary(root->left, result);
-        result.push_back(root->data);
+    // Add right boundary nodes in reverse order (excluding leaves)
+    void addRightBoundary(Node* root, vector<int>& res) {
+        Node* cur = root->right;
+        vector<int> tmp;
+        while (cur) {
+            if (!isLeaf(cur)) tmp.push_back(cur->data);
+            if (cur->right) cur = cur->right;
+            else cur = cur->left;
+        }
+        // Add right boundary nodes in reverse order
+        for (int i = tmp.size()-1; i >= 0; --i) {
+            res.push_back(tmp[i]);
+        }
     }
-
+    
 public:
-    vector <int> boundary(Node *root) {
-        vector<int> result;
-        if (!root) return result;
+    vector<int> boundaryTraversal(Node* root) {
+        vector<int> res;
+        if (!root) return res;
         
-        result.push_back(root->data);
+        // Add root if it's not a leaf
+        if (!isLeaf(root))
+            res.push_back(root->data);
+            
+        // Step 1: Add left boundary
+        addLeftBoundary(root, res);
         
-        // Left boundary
-        leftBoundary(root->left, result);
+        // Step 2: Add leaf nodes
+        addLeaves(root, res);
         
-        // Leaves
-        leaves(root->left, result);
-        leaves(root->right, result);
+        // Step 3: Add right boundary in reverse order
+        addRightBoundary(root, res);
         
-        // Right boundary (reversed)
-        rightBoundary(root->right, result);
-        
-        return result;
+        return res;
     }
 };
 
 //{ Driver Code Starts.
 
-/* Driver program to test size function*/
-
+/* Driver program to test size function */
 int main() {
     int t;
     string tc;
     getline(cin, tc);
-    t=stoi(tc);
-    while(t--)
-    {
-        string s ,ch;
+    t = stoi(tc);
+    while (t--) {
+        string s, ch;
         getline(cin, s);
         Node* root = buildTree(s);
         Solution ob;
-        vector <int> res = ob.boundary(root);
-        for (int i : res) cout << i << " ";
+        vector<int> res = ob.boundaryTraversal(root);
+        for (int i : res)
+            cout << i << " ";
         cout << endl;
+
+        cout << "~"
+             << "\n";
     }
     return 0;
 }
+
 // } Driver Code Ends
