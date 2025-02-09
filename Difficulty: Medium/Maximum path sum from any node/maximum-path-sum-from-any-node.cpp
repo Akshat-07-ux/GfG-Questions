@@ -3,7 +3,8 @@
 using namespace std;
 
 // Tree Node
-struct Node {
+class Node {
+  public:
     int data;
     Node *left;
     Node *right;
@@ -21,7 +22,7 @@ Node *buildTree(string str) {
         return NULL;
 
     // Creating vector of strings from input
-    // string after spliting by space
+    // string after splitting by space
     vector<string> ip;
 
     istringstream iss(str);
@@ -80,34 +81,46 @@ Node *buildTree(string str) {
 
 // } Driver Code Ends
 // User Fuction template for C++
+/*
+// Tree Node
+class Node {
+public:
+    int data;
+    Node *left;
+    Node *right;
 
+    Node(int val) {
+        data = val;
+        left = right = NULL;
+    }
+};
+*/
 class Solution {
 public:
-    // Helper function to calculate the maximum path sum
-    int maxPathSumUtil(Node* root, int& maxSum) {
-        if (!root) return 0;
+    int findMaxUtil(Node* root, int &res) {
+        if (root == NULL)
+            return 0;
 
-        // Recursively calculate the maximum path sum of left and right subtrees
-        int leftSum = max(0, maxPathSumUtil(root->left, maxSum));  // Ignore negative paths
-        int rightSum = max(0, maxPathSumUtil(root->right, maxSum)); // Ignore negative paths
+        // Recursively get the max sum from left and right subtrees
+        int left = max(0, findMaxUtil(root->left, res));
+        int right = max(0, findMaxUtil(root->right, res));
 
-        // Update the maximum sum considering the current node as the root of the path
-        maxSum = max(maxSum, leftSum + rightSum + root->data);
+        // Update the overall maximum path sum
+        res = max(res, left + right + root->data);
 
-        // Return the maximum path sum going through the current node
-        return root->data + max(leftSum, rightSum);
+        // Return the maximum path sum including the current node
+        return root->data + max(left, right);
     }
 
-    // Function to return maximum path sum from any node in a tree
+    // Function to return maximum path sum from any node in a tree.
     int findMaxSum(Node* root) {
-        int maxSum = INT_MIN; // Initialize the maximum sum
-        maxPathSumUtil(root, maxSum);
-        return maxSum;
+        int res = INT_MIN;
+        findMaxUtil(root, res);
+        return res;
     }
 };
 
 //{ Driver Code Starts.
-
 
 int main() {
     int tc;
@@ -119,11 +132,11 @@ int main() {
         Node *root = buildTree(treeString);
         cout << ob.findMaxSum(root) << "\n";
 
-    
-cout << "~" << "\n";
-}
-
+        cout << "~"
+             << "\n";
+    }
 
     return 0;
 }
+
 // } Driver Code Ends
