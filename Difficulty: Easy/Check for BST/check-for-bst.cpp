@@ -18,26 +18,17 @@ struct Node {
 
 // } Driver Code Ends
 class Solution {
-private:
-    bool isBSTUtil(Node* node, long long min, long long max) {
-        // Base case: an empty tree is BST
-        if (node == nullptr) return true;
-        
-        // Check if the current node's value is within the allowed range
-        if (node->data <= min || node->data >= max)
-            return false;
-        
-        // Recursively check left and right subtrees
-        // For left subtree, update max to current node's value
-        // For right subtree, update min to current node's value
-        return isBSTUtil(node->left, min, node->data) &&
-               isBSTUtil(node->right, node->data, max);
+ public:
+    // Helper function to validate BST with min and max constraints.
+    bool isBSTUtil(Node* root, long long minVal, long long maxVal) {
+        if (!root) return true;
+        if (root->data <= minVal || root->data >= maxVal) return false;
+        return isBSTUtil(root->left, minVal, root->data) && 
+               isBSTUtil(root->right, root->data, maxVal);
     }
-
-public:
+    
     // Function to check whether a Binary Tree is BST or not.
     bool isBST(Node* root) {
-        // Use long long for min and max to handle edge cases
         return isBSTUtil(root, LLONG_MIN, LLONG_MAX);
     }
 };
@@ -137,6 +128,7 @@ int main() {
 
         else
             cout << "false\n";
+        cout << "~" << endl;
     }
     return 0;
 }
