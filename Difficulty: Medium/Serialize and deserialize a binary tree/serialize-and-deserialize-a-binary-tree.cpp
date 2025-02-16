@@ -81,7 +81,7 @@ Node *buildTree(string str) {
 
 // } Driver Code Ends
 /* A binary tree node has data, pointer to left child
-   and a pointer to right child  
+   and a pointer to right child
 struct Node
 {
     int data;
@@ -89,57 +89,55 @@ struct Node
     Node* right;
 }; */
 
-
-class Solution
-{
+class Solution {
  public:
     // Function to serialize a tree and return a list containing nodes of tree.
-    vector<int> serialize(Node *root) {
+    vector<int> serialize(Node* root) {
         vector<int> result;
         if (!root) return result;
-
+        
         queue<Node*> q;
         q.push(root);
-
+        
         while (!q.empty()) {
-            Node* node = q.front();
+            Node* curr = q.front();
             q.pop();
-
-            if (node) {
-                result.push_back(node->data);
-                q.push(node->left);
-                q.push(node->right);
+            
+            if (curr) {
+                result.push_back(curr->data);
+                q.push(curr->left);
+                q.push(curr->right);
             } else {
-                result.push_back(-1);  // Use -1 as a marker for NULL nodes
+                result.push_back(-1);  // Using -1 as NULL marker
             }
         }
         return result;
     }
-    
-    // Function to deserialize a list and construct the tree.
-    Node* deSerialize(vector<int> &data) {
-        if (data.empty()) return NULL;
 
-        Node* root = new Node(data[0]);
+    // Function to deserialize a list and construct the tree.
+    Node* deSerialize(vector<int>& arr) {
+        if (arr.empty()) return NULL;
+
+        Node* root = new Node(arr[0]);
         queue<Node*> q;
         q.push(root);
-
         int i = 1;
-        while (!q.empty() && i < data.size()) {
-            Node* node = q.front();
+
+        while (!q.empty() && i < arr.size()) {
+            Node* curr = q.front();
             q.pop();
 
-            // Process left child
-            if (data[i] != -1) {
-                node->left = new Node(data[i]);
-                q.push(node->left);
+            // Left child
+            if (arr[i] != -1) {
+                curr->left = new Node(arr[i]);
+                q.push(curr->left);
             }
             i++;
 
-            // Process right child
-            if (i < data.size() && data[i] != -1) {
-                node->right = new Node(data[i]);
-                q.push(node->right);
+            // Right child
+            if (i < arr.size() && arr[i] != -1) {
+                curr->right = new Node(arr[i]);
+                q.push(curr->right);
             }
             i++;
         }
@@ -157,25 +155,24 @@ void inorder(Node *root) {
     inorder(root->right);
 }
 
-void _deleteTree(Node* node)  
-{  
-    if (node == NULL) return;  
-  
+void _deleteTree(Node *node) {
+    if (node == NULL)
+        return;
+
     /* first delete both subtrees */
-    _deleteTree(node->left);  
-    _deleteTree(node->right);  
-  
+    _deleteTree(node->left);
+    _deleteTree(node->right);
+
     /* then delete the node */
-    //cout << "Deleting node: " << node->data << endl;  
-    delete node;  
-}  
-  
+    // cout << "Deleting node: " << node->data << endl;
+    delete node;
+}
+
 /* Deletes a tree and sets the root as NULL */
-void deleteTree(Node** node_ref)  
-{  
-    _deleteTree(*node_ref);  
-    *node_ref = NULL;  
-}  
+void deleteTree(Node **node_ref) {
+    _deleteTree(*node_ref);
+    *node_ref = NULL;
+}
 
 int main() {
     int tc;
@@ -184,20 +181,19 @@ int main() {
         string treeString;
         getline(cin, treeString);
         Node *root = buildTree(treeString);
-        
+
         Solution serial, deserial;
         vector<int> A = serial.serialize(root);
-        Node* temp = root;
+        Node *temp = root;
         deleteTree(&root);
         Node *getRoot = deserial.deSerialize(A);
         inorder(getRoot);
-        
+
         cout << "\n";
 
-    
-cout << "~" << "\n";
-}
-
+        cout << "~"
+             << "\n";
+    }
 
     return 0;
 }
