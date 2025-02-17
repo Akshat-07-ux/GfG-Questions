@@ -1,63 +1,49 @@
 //{ Driver Code Starts
 #include <bits/stdc++.h>
-
 using namespace std;
 
 
 // } Driver Code Ends
-//User function template for C++
-class Solution{
-public:
-    vector<int> kLargest(int arr[], int n, int k) {
-        // Min-heap to store the k largest elements
-        priority_queue<int, vector<int>, greater<int>> minHeap;
-        
-        // Iterate through the array
-        for (int i = 0; i < n; ++i) {
-            if (minHeap.size() < k) {
-                // If heap size is less than k, push the current element
-                minHeap.push(arr[i]);
-            } else if (arr[i] > minHeap.top()) {
-                // If current element is larger than the smallest in the heap
-                minHeap.pop();  // Remove the smallest element
-                minHeap.push(arr[i]);  // Add the new element
-            }
-        }
-        
-        // Extract elements from heap and store them in a vector
+class Solution {
+ public:
+    vector<int> kLargest(vector<int>& arr, int k) {
+        priority_queue<int> maxHeap(arr.begin(), arr.end());  // Max heap
+
         vector<int> result;
-        while (!minHeap.empty()) {
-            result.push_back(minHeap.top());
-            minHeap.pop();
+        for (int i = 0; i < k; i++) {
+            result.push_back(maxHeap.top());  // Get largest element
+            maxHeap.pop();  // Remove it from heap
         }
-        
-        // Reverse the vector to get the elements in decreasing order
-        reverse(result.begin(), result.end());
-        
-        return result;
+        return result;  // Already in decreasing order
     }
 };
 
 //{ Driver Code Starts.
-
 int main() {
-    int t;
-    cin >> t;
+    string ts;
+    getline(cin, ts);
+    int t = stoi(ts);
     while (t--) {
-        int n, k;
-        cin >> n >> k;
-        int arr[n];
-        for (int i = 0; i < n; i++) {
-            cin >> arr[i];
+
+        vector<int> arr;
+        string input;
+        getline(cin, input);
+        stringstream ss(input);
+        int number;
+        while (ss >> number) {
+            arr.push_back(number);
         }
+        string ks;
+        getline(cin, ks);
+        int k = stoi(ks);
         Solution ob;
-        auto ans = ob.kLargest(arr, n, k);
-        for (auto x : ans) {
-            cout << x << " ";
+        vector<int> ans = ob.kLargest(arr, k);
+        for (auto it : ans) {
+            cout << it << " ";
         }
-        cout << "\n";
+        cout << endl;
+        cout << "~" << endl;
     }
     return 0;
 }
-
 // } Driver Code Ends
