@@ -3,74 +3,66 @@
 using namespace std;
 
 
-
 // } Driver Code Ends
-class Solution
- {
-    // Two heaps to store the elements
-    priority_queue<int> maxHeap; // Max heap for the lower half
-    priority_queue<int, vector<int>, greater<int>> minHeap; // Min heap for the upper half
-    
-public:
-    // Function to insert element into heaps
-    void insertHeap(int &x) {
-        // If maxHeap is empty or x is less than or equal to maxHeap's top, insert into maxHeap
-        if (maxHeap.empty() || x <= maxHeap.top()) {
-            maxHeap.push(x);
-        } else {
-            minHeap.push(x);
+class Solution {
+ public:
+    vector<double> getMedian(vector<int> &arr) {
+        vector<double> medians;
+        priority_queue<int> maxHeap; // Max heap (left half)
+        priority_queue<int, vector<int>, greater<int>> minHeap; // Min heap (right half)
+
+        for (int num : arr) {
+            // Step 1: Insert into maxHeap
+            if (maxHeap.empty() || num <= maxHeap.top()) {
+                maxHeap.push(num);
+            } else {
+                minHeap.push(num);
+            }
+
+            // Step 2: Balance the heaps
+            if (maxHeap.size() > minHeap.size() + 1) {
+                minHeap.push(maxHeap.top());
+                maxHeap.pop();
+            } else if (minHeap.size() > maxHeap.size()) {
+                maxHeap.push(minHeap.top());
+                minHeap.pop();
+            }
+
+            // Step 3: Find median
+            if (maxHeap.size() == minHeap.size()) {
+                medians.push_back((maxHeap.top() + minHeap.top()) / 2.0);
+            } else {
+                medians.push_back(maxHeap.top());
+            }
         }
-        
-        // Balance the heaps
-        balanceHeaps();
-    }
-    
-    // Function to balance the heaps
-    void balanceHeaps() {
-        // If maxHeap has more than one extra element compared to minHeap, move the top element from maxHeap to minHeap
-        if (maxHeap.size() > minHeap.size() + 1) {
-            minHeap.push(maxHeap.top());
-            maxHeap.pop();
-        }
-        // If minHeap has more elements, move the top element from minHeap to maxHeap
-        else if (minHeap.size() > maxHeap.size()) {
-            maxHeap.push(minHeap.top());
-            minHeap.pop();
-        }
-    }
-    
-    // Function to return the median of the current stream
-    double getMedian() {
-        // If both heaps have the same size, the median is the average of the top elements
-        if (maxHeap.size() == minHeap.size()) {
-            return (maxHeap.top() + minHeap.top()) / 2.0;
-        }
-        // Otherwise, the median is the top element of the maxHeap
-        else {
-            return maxHeap.top();
-        }
+        return medians;
     }
 };
 
 
 //{ Driver Code Starts.
-
-int main()
-{
-    int n, x;
+int main() {
     int t;
-    cin>>t;
-    while(t--)
-    {
-    	Solution ob;
-    	cin >> n;
-    	for(int i = 1;i<= n; ++i)
-    	{
-    		cin >> x;
-    		ob.insertHeap(x);
-    	    cout << floor(ob.getMedian()) << endl;
-    	}
+    cin >> t;
+    cin.ignore();
+    while (t--) {
+
+        string s;
+        getline(cin, s);
+        stringstream ss(s);
+        vector<int> nums;
+        int num;
+        while (ss >> num) {
+            nums.push_back(num);
+        }
+        Solution ob;
+        vector<double> ans = ob.getMedian(nums);
+        cout << fixed << setprecision(1);
+        for (auto &i : ans)
+            cout << i << " ";
+        cout << "\n";
+        cout << "~" << endl;
     }
-	return 0;
+    return 0;
 }
 // } Driver Code Ends
