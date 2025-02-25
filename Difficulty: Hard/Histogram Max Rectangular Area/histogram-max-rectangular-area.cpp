@@ -1,34 +1,27 @@
 //{ Driver Code Starts
+// Initial Template for C++
+
 #include <bits/stdc++.h>
 using namespace std;
 
 
 // } Driver Code Ends
+
 class Solution {
-public:
-    // Function to find largest rectangular area possible in a given histogram.
-    long long getMaxArea(vector<long long>& arr) {
+ public:
+    int getMaxArea(vector<int> &arr) {
         int n = arr.size();
         stack<int> s;
-        long long maxArea = 0;
-        int i = 0;
+        int maxArea = 0;
         
-        while (i < n) {
-            if (s.empty() || arr[s.top()] <= arr[i]) {
-                s.push(i++);
-            } else {
-                int top = s.top();
+        for (int i = 0; i <= n; i++) {
+            while (!s.empty() && (i == n || arr[s.top()] > arr[i])) {
+                int height = arr[s.top()];
                 s.pop();
-                long long area = arr[top] * (s.empty() ? i : i - s.top() - 1);
-                maxArea = max(maxArea, area);
+                int width = s.empty() ? i : i - s.top() - 1;
+                maxArea = max(maxArea, height * width);
             }
-        }
-        
-        while (!s.empty()) {
-            int top = s.top();
-            s.pop();
-            long long area = arr[top] * (s.empty() ? i : i - s.top() - 1);
-            maxArea = max(maxArea, area);
+            s.push(i);
         }
         
         return maxArea;
@@ -39,18 +32,24 @@ public:
 //{ Driver Code Starts.
 
 int main() {
-    long long t;
-
-    cin >> t;
+    string ts;
+    getline(cin, ts);
+    int t = stoi(ts);
     while (t--) {
-        int n;
-        cin >> n;
-
-        vector<long long> arr(n);
-        for (int i = 0; i < n; i++)
-            cin >> arr[i];
-        Solution ob;
-        cout << ob.getMaxArea(arr) << endl;
+        vector<int> arr;
+        string input;
+        getline(cin, input);
+        stringstream ss(input);
+        int number;
+        while (ss >> number) {
+            arr.push_back(number);
+        }
+        Solution obj;
+        int res = obj.getMaxArea(arr);
+        cout << res << endl;
+        cout << "~" << endl;
+        // string tl;
+        // getline(cin, tl);
     }
     return 0;
 }
