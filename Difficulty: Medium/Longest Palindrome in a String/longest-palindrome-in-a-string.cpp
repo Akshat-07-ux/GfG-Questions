@@ -1,57 +1,65 @@
 //{ Driver Code Starts
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 
 
 // } Driver Code Ends
 
 class Solution {
-public:
-    string longestPalin (string S) {
-        int n = S.size();
+ public:
+    string longestPalindrome(string &s) {
+        int n = s.size();
         if (n == 0) return "";
         
-        // Initialize start position and max length of the palindrome substring
         int start = 0, maxLength = 1;
-        
-        // Helper function to expand around the center
-        auto expandAroundCenter = [&](int left, int right) {
-            while (left >= 0 && right < n && S[left] == S[right]) {
+
+        // Function to expand around the center
+        auto expandAroundCenter = [&](int left, int right) -> pair<int, int> {
+            while (left >= 0 && right < n && s[left] == s[right]) {
                 left--;
                 right++;
             }
-            int len = right - left - 1; // Length of the palindrome
-            if (len > maxLength) {
-                start = left + 1;
-                maxLength = len;
-            }
+            int length = right - left - 1;
+            return make_pair(left + 1, length);
         };
         
-        for (int i = 0; i < n; ++i) {
-            // Check for odd length palindrome centered at i
-            expandAroundCenter(i, i);
-            // Check for even length palindrome centered at i and i+1
-            expandAroundCenter(i, i + 1);
+        for (int i = 0; i < n; i++) {
+            // Odd length palindrome
+            pair<int, int> odd = expandAroundCenter(i, i);
+            if (odd.second > maxLength) {
+                maxLength = odd.second;
+                start = odd.first;
+            }
+            
+            // Even length palindrome
+            pair<int, int> even = expandAroundCenter(i, i + 1);
+            if (even.second > maxLength) {
+                maxLength = even.second;
+                start = even.first;
+            }
         }
         
-        return S.substr(start, maxLength);
+        return s.substr(start, maxLength);
     }
 };
 
 
+
 //{ Driver Code Starts.
 
-int main()
-{
-    int t; cin >> t;
-    while (t--)
-    {
-        string S; cin >> S;
-        
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        string S;
+        cin >> S;
+
         Solution ob;
-        cout << ob.longestPalin (S) << endl;
+        cout << ob.longestPalindrome(S) << endl;
+
+        cout << "~"
+             << "\n";
     }
 }
-// Contributed By: Pranay Bansal
 
 // } Driver Code Ends
