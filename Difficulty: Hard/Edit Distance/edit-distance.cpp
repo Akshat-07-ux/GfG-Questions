@@ -1,51 +1,56 @@
 //{ Driver Code Starts
+// Initial Template for C++
 #include <bits/stdc++.h>
 using namespace std;
 
 
 // } Driver Code Ends
+
 class Solution {
-public:
-    int editDistance(string str1, string str2) {
-        int m = str1.length();
-        int n = str2.length();
-        
-        // Create a 2D DP table
-        vector<vector<int>> dp(m + 1, vector<int>(n + 1));
-        
-        // Initialize first row and column
-        for (int i = 0; i <= m; i++)
-            dp[i][0] = i;
-        for (int j = 0; j <= n; j++)
-            dp[0][j] = j;
-        
-        // Fill the DP table
+ public:
+    // Function to compute the edit distance between two strings
+    int editDistance(string& s1, string& s2) {
+        int m = s1.length();
+        int n = s2.length();
+        vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));
+
+        // Filling the base cases
+        for (int i = 0; i <= m; i++) dp[i][0] = i;  // Deleting all characters
+        for (int j = 0; j <= n; j++) dp[0][j] = j;  // Inserting all characters
+
+        // Filling the DP table
         for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
-                if (str1[i-1] == str2[j-1])
-                    dp[i][j] = dp[i-1][j-1];
-                else
-                    dp[i][j] = 1 + min({dp[i-1][j],    // Delete
-                                        dp[i][j-1],    // Insert
-                                        dp[i-1][j-1]}); // Replace
+                if (s1[i - 1] == s2[j - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1];  // No operation needed
+                } else {
+                    dp[i][j] = 1 + min({dp[i - 1][j],     // Remove
+                                        dp[i][j - 1],     // Insert
+                                        dp[i - 1][j - 1]  // Replace
+                                       });
+                }
             }
         }
-        
-        // Return the minimum number of operations
         return dp[m][n];
     }
 };
 
 //{ Driver Code Starts.
+
 int main() {
+
     int T;
     cin >> T;
+    cin.ignore();
     while (T--) {
-        string s, t;
-        cin >> s >> t;
+        string s1;
+        getline(cin, s1);
+        string s2;
+        getline(cin, s2);
         Solution ob;
-        int ans = ob.editDistance(s, t);
+        int ans = ob.editDistance(s1, s2);
         cout << ans << "\n";
+        cout << "~" << endl;
     }
     return 0;
 }
