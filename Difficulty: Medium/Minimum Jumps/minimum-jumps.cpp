@@ -4,51 +4,34 @@ using namespace std;
 
 
 // } Driver Code Ends
-// Function to return minimum number of jumps to end of array
 
 class Solution {
- public:
+public:
     int minJumps(vector<int>& arr) {
         int n = arr.size();
-        
-        // Edge case: If the array has only one element
-        if (n == 1) return 0;
+        if (n == 1) return 0; // Already at the last index
+        if (arr[0] == 0) return -1; // Can't move anywhere
 
-        // Edge case: If the first element is 0 and there are more than 1 elements
-        if (arr[0] == 0) return -1;
+        int maxReach = arr[0]; // Max index reachable
+        int steps = arr[0]; // Steps we can still take
+        int jumps = 1; // Number of jumps taken
 
-        // Initialize variables
-        int maxReach = arr[0];  // The farthest we can reach from the current index
-        int steps = arr[0];     // Steps we can take before needing to make another jump
-        int jumps = 1;          // We start by making the first jump
-        
-        // Traverse the array from the 1st index to the second-to-last index
         for (int i = 1; i < n; i++) {
-            // If we've reached the last index
-            if (i == n - 1) return jumps;
+            if (i == n - 1) return jumps; // Reached the last index
+            
+            maxReach = max(maxReach, i + arr[i]); // Update max reachable index
+            steps--; // Use a step
 
-            // Update maxReach
-            maxReach = max(maxReach, i + arr[i]);
-
-            // Use a step to move forward
-            steps--;
-
-            // If no more steps are remaining, we need to make another jump
-            if (steps == 0) {
-                jumps++;  // Increment the number of jumps
-                
-                // If we can't move further, return -1
-                if (i >= maxReach) return -1;
-
-                // Reset steps to the number of steps we can take from the new position
-                steps = maxReach - i;
+            if (steps == 0) { // Need to jump
+                jumps++;
+                if (i >= maxReach) return -1; // Can't move further
+                steps = maxReach - i; // Update steps for the next jump
             }
         }
-
-        // If we haven't reached the last index, return -1
         return -1;
     }
 };
+
 
 
 //{ Driver Code Starts.
@@ -69,7 +52,7 @@ int main() {
             arr.push_back(number);
         }
         Solution obj;
-        cout << obj.minJumps(arr) << endl;
+        cout << obj.minJumps(arr) << endl << "~\n";
     }
     return 0;
 }
