@@ -1,43 +1,43 @@
 //{ Driver Code Starts
 #include <bits/stdc++.h>
-
 using namespace std;
 
 
 // } Driver Code Ends
+
 class Solution {
-public:
-    int maxProfit(vector<int> &arr) {
-        int n = arr.size();
-        if (n == 0) return 0;
+  public:
+    int maxProfit(vector<int> &prices) {
+        int n = prices.size();
+        if (n < 2) return 0;
 
-        // Step 1: Calculate maximum profit if we sell at each index
-        vector<int> leftProfit(n, 0);
-        int minPrice = arr[0];
-
+        vector<int> left(n, 0), right(n, 0);
+        
+        // First transaction (Left to Right)
+        int minPrice = prices[0];
         for (int i = 1; i < n; i++) {
-            minPrice = min(minPrice, arr[i]);
-            leftProfit[i] = max(leftProfit[i - 1], arr[i] - minPrice);
+            minPrice = min(minPrice, prices[i]);
+            left[i] = max(left[i - 1], prices[i] - minPrice);
         }
 
-        // Step 2: Calculate maximum profit if we buy at each index
-        vector<int> rightProfit(n, 0);
-        int maxPrice = arr[n - 1];
-
+        // Second transaction (Right to Left)
+        int maxPrice = prices[n - 1];
         for (int i = n - 2; i >= 0; i--) {
-            maxPrice = max(maxPrice, arr[i]);
-            rightProfit[i] = max(rightProfit[i + 1], maxPrice - arr[i]);
+            maxPrice = max(maxPrice, prices[i]);
+            right[i] = max(right[i + 1], maxPrice - prices[i]);
         }
 
-        // Step 3: Combine the two profits to get the maximum result
+        // Maximum profit with two transactions
         int maxProfit = 0;
         for (int i = 0; i < n; i++) {
-            maxProfit = max(maxProfit, leftProfit[i] + rightProfit[i]);
+            maxProfit = max(maxProfit, left[i] + right[i]);
         }
 
         return maxProfit;
     }
 };
+
+
 
 //{ Driver Code Starts.
 int main() {
