@@ -1,98 +1,87 @@
 //{ Driver Code Starts
-// Program to find the maximum profit job sequence from a given array 
-// of jobs with deadlines and profits 
-#include<bits/stdc++.h>
-using namespace std; 
-
-// A structure to represent a job 
-struct Job 
-{ 
-    int id;	 // Job Id 
-    int dead; // Deadline of job 
-    int profit; // Profit if job is over before or on deadline 
-}; 
+// Driver code
+#include <bits/stdc++.h>
+using namespace std;
 
 
 // } Driver Code Ends
-/*
-struct Job 
-{ 
-    int id;	 // Job Id 
-    int dead; // Deadline of job 
-    int profit; // Profit if job is over before or on deadline 
-};
-*/
 
 class Solution {
-public:
-    // Function to find the maximum profit and the number of jobs done.
-    vector<int> JobScheduling(Job arr[], int n) 
-    { 
-        // Sort jobs in descending order of profit
-        sort(arr, arr + n, [](Job a, Job b) {
-            return a.profit > b.profit;
-        });
+  public:
+    vector<int> parent;
 
-        // Find the maximum deadline
-        int maxDeadline = 0;
+    // DSU find function to get the latest available slot
+    int find(int x) {
+        if (parent[x] == x) return x;
+        return parent[x] = find(parent[x]); // Path compression
+    }
+
+    vector<int> jobSequencing(vector<int> &deadline, vector<int> &profit) {
+        int n = deadline.size();
+        vector<pair<int, int>> jobs;
+
+        // Store jobs as pairs (profit, deadline)
         for (int i = 0; i < n; i++) {
-            maxDeadline = max(maxDeadline, arr[i].dead);
+            jobs.push_back({profit[i], deadline[i]});
         }
 
-        // Initialize a vector to keep track of time slots
-        vector<bool> timeSlot(maxDeadline + 1, false);
+        // Sort jobs in descending order of profit
+        sort(jobs.rbegin(), jobs.rend());
 
-        int jobsDone = 0;
-        int maxProfit = 0;
+        int maxDeadline = *max_element(deadline.begin(), deadline.end());
+        parent.resize(maxDeadline + 1);
 
-        // Iterate through all jobs
-        for (int i = 0; i < n; i++) {
-            // Find a free time slot for this job
-            for (int j = min(maxDeadline, arr[i].dead); j > 0; j--) {
-                if (!timeSlot[j]) {
-                    timeSlot[j] = true;
-                    jobsDone++;
-                    maxProfit += arr[i].profit;
-                    break;
-                }
+        // Initialize DSU parent array (self-parenting initially)
+        for (int i = 0; i <= maxDeadline; i++) {
+            parent[i] = i;
+        }
+
+        int maxJobs = 0, totalProfit = 0;
+
+        for (auto &job : jobs) {
+            int profit = job.first, d = job.second;
+
+            // Find the latest available slot using DSU
+            int availableSlot = find(d);
+            if (availableSlot > 0) {
+                parent[availableSlot] = find(availableSlot - 1); // Merge to previous slot
+                maxJobs++;
+                totalProfit += profit;
             }
         }
 
-        return {jobsDone, maxProfit};
+        return {maxJobs, totalProfit};
     }
 };
 
+
+
 //{ Driver Code Starts.
-// Driver program to test methods 
-int main() 
-{ 
+
+int main() {
     int t;
-    //testcases
     cin >> t;
-    
-    while(t--){
-        int n;
-        
-        //size of array
-        cin >> n;
-        Job arr[n];
-        
-        //adding id, deadline, profit
-        for(int i = 0;i<n;i++){
-                int x, y, z;
-                cin >> x >> y >> z;
-                arr[i].id = x;
-                arr[i].dead = y;
-                arr[i].profit = z;
-        }
-        Solution ob;
-        //function call
-        vector<int> ans = ob.JobScheduling(arr, n);
-        cout<<ans[0]<<" "<<ans[1]<<endl;
+    cin.ignore();
+    while (t--) {
+        vector<int> deadlines, profits;
+        string temp;
+        getline(cin, temp);
+        int x;
+        istringstream ss1(temp);
+        while (ss1 >> x)
+            deadlines.push_back(x);
+
+        getline(cin, temp);
+        istringstream ss2(temp);
+        while (ss2 >> x)
+            profits.push_back(x);
+
+        Solution obj;
+        vector<int> ans = obj.jobSequencing(deadlines, profits);
+        cout << ans[0] << " " << ans[1] << endl;
+        cout << "~" << endl;
     }
-	return 0; 
+    return 0;
 }
-
-
 
 // } Driver Code Ends
