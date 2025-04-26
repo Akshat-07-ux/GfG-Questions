@@ -3,7 +3,8 @@
 using namespace std;
 
 // Tree Node
-struct Node {
+class Node {
+  public:
     int data;
     Node *left;
     Node *right;
@@ -17,14 +18,16 @@ struct Node {
 // Function to Build Tree
 Node *buildTree(string str) {
     // Corner Case
-    if (str.length() == 0 || str[0] == 'N') return NULL;
+    if (str.length() == 0 || str[0] == 'N')
+        return NULL;
 
     // Creating vector of strings from input
     // string after spliting by space
     vector<string> ip;
 
     istringstream iss(str);
-    for (string str; iss >> str;) ip.push_back(str);
+    for (string str; iss >> str;)
+        ip.push_back(str);
 
     // Create the root of the tree
     Node *root = new Node(stoi(ip[0]));
@@ -56,7 +59,8 @@ Node *buildTree(string str) {
 
         // For the right child
         i++;
-        if (i >= ip.size()) break;
+        if (i >= ip.size())
+            break;
         currVal = ip[i];
 
         // If the right child is not null
@@ -76,10 +80,12 @@ Node *buildTree(string str) {
 
 
 // } Driver Code Ends
+
 // User Function template for C++
 
 // Structure of node
-/*struct Node {
+/*class Node {
+   public:
     int data;
     Node *left;
     Node *right;
@@ -91,60 +97,43 @@ Node *buildTree(string str) {
 };*/
 
 class Solution {
-public:
-    // Function to count the total number of nodes in the tree.
+ public:
     int countNodes(Node* root) {
-        if (root == NULL)
-            return 0;
+        if (!root) return 0;
         return 1 + countNodes(root->left) + countNodes(root->right);
     }
 
-    // Function to check if the tree is complete or not.
     bool isComplete(Node* root, int index, int totalNodes) {
-        // An empty tree is complete.
-        if (root == NULL)
-            return true;
-        
-        // If the index of the current node is greater than or equal to the total number of nodes,
-        // it means the tree is not complete.
-        if (index >= totalNodes)
-            return false;
-        
-        // Recursively check the left and right subtrees.
+        if (!root) return true;
+        if (index >= totalNodes) return false;
         return isComplete(root->left, 2 * index + 1, totalNodes) &&
                isComplete(root->right, 2 * index + 2, totalNodes);
     }
 
-    // Function to check if the tree follows the max-heap property.
-    bool isMaxHeap(Node* root) {
-        // If the node is a leaf node, it is a max-heap by default.
-        if (root->left == NULL && root->right == NULL)
-            return true;
-        
-        // If there is only a left child, check if the root is greater than the left child.
-        if (root->right == NULL)
-            return root->data >= root->left->data;
-        
-        // If there are both left and right children, check if the root is greater than both children.
-        if (root->data >= root->left->data && root->data >= root->right->data)
-            // Recursively check the max-heap property for the left and right subtrees.
-            return isMaxHeap(root->left) && isMaxHeap(root->right);
-        
+    bool isHeapUtil(Node* root) {
+        // Base case: leaf node
+        if (!root->left && !root->right) return true;
+
+        // Node has only left child
+        if (root->left && !root->right)
+            return (root->data >= root->left->data) && isHeapUtil(root->left);
+
+        // Node has both children
+        if (root->left && root->right)
+            return (root->data >= root->left->data) &&
+                   (root->data >= root->right->data) &&
+                   isHeapUtil(root->left) && isHeapUtil(root->right);
+
+        // Should never happen in a complete tree
         return false;
     }
 
-    // Main function to check if the binary tree is a max-heap.
-    bool isHeap(Node* root) {
-        if (root == NULL)
-            return true;
-        
-        int totalNodes = countNodes(root);
-        int index = 0;
-        
-        // Check if the tree is complete and satisfies the max-heap property.
-        return isComplete(root, index, totalNodes) && isMaxHeap(root);
+    bool isHeap(Node* tree) {
+        int totalNodes = countNodes(tree);
+        return isComplete(tree, 0, totalNodes) && isHeapUtil(tree);
     }
 };
+
 
 //{ Driver Code Starts.
 
@@ -157,9 +146,12 @@ int main() {
         Solution ob;
         Node *root = buildTree(treeString);
         if (ob.isHeap(root))
-            cout << 1 << endl;
+            cout << "true" << endl;
         else
-            cout << 0 << endl;
+            cout << "false" << endl;
+
+        cout << "~"
+             << "\n";
     }
 
     return 0;
