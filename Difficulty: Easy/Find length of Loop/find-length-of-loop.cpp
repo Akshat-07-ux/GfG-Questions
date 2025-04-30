@@ -12,14 +12,6 @@ struct Node {
     }
 };
 
-void printList(Node *node) {
-    while (node != NULL) {
-        cout << node->data << " ";
-        node = node->next;
-    }
-    cout << "\n";
-}
-
 void loopHere(Node *head, Node *tail, int position) {
     if (position == 0)
         return;
@@ -32,8 +24,8 @@ void loopHere(Node *head, Node *tail, int position) {
 
 
 // } Driver Code Ends
-/*
 
+/*
 struct Node {
     int data;
     struct Node *next;
@@ -45,32 +37,39 @@ struct Node {
 
 */
 class Solution {
-  public:
-    // Function to find the length of a loop in the linked list.
-    int countNodesinLoop(struct Node *head) {
-        if (!head || !head->next) return 0;
+ public:
+    // Function to count the number of nodes in loop.
+    int countNodesinLoop(Node *head) {
+        Node *slow = head;
+        Node *fast = head;
 
-        Node *slow = head, *fast = head;
+        // Step 1: Detect loop using Floyd’s Cycle Detection algorithm
+        while (fast != NULL && fast->next != NULL) {
+            slow = slow->next;          // Move slow by 1
+            fast = fast->next->next;    // Move fast by 2
 
-        // Step 1: Detect loop using Floyd’s Cycle-Finding Algorithm
-        while (fast && fast->next) {
-            slow = slow->next;
-            fast = fast->next->next;
-            
             if (slow == fast) {
-                // Step 2: Loop detected, now count the nodes in the loop
-                int count = 1;
-                Node *temp = slow;
-                while (temp->next != slow) {
-                    count++;
-                    temp = temp->next;
-                }
-                return count;
+                // Loop detected, now count the loop length
+                return countLoopLength(slow);
             }
         }
 
-        // No loop found
+        // No loop
         return 0;
+    }
+
+  private:
+    // Helper function to count nodes in loop
+    int countLoopLength(Node* loopNode) {
+        Node* temp = loopNode;
+        int count = 1;
+
+        while (temp->next != loopNode) {
+            count++;
+            temp = temp->next;
+        }
+
+        return count;
     }
 };
 
@@ -102,6 +101,7 @@ int main() {
 
         Solution ob;
         cout << ob.countNodesinLoop(head) << endl;
+        cout << "~" << endl;
     }
     return 0;
 }
