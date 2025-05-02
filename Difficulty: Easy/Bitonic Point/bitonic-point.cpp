@@ -1,58 +1,65 @@
 //{ Driver Code Starts
 #include <bits/stdc++.h>
-
 using namespace std;
 
 
 // } Driver Code Ends
-//User function template for C++
-class Solution{
-public:
-    int findMaximum(int arr[], int n) {
-        int left = 0;
-        int right = n - 1;
+
+// User function template for C++
+class Solution {
+   public:
+    int findMaximum(vector<int> &arr) {
+        int low = 0, high = arr.size() - 1;
         
-        // Handle edge cases where the array size is minimal
-        if (n == 1) return arr[0];
-        if (arr[0] > arr[1]) return arr[0];
-        if (arr[n - 1] > arr[n - 2]) return arr[n - 1];
-        
-        while (left <= right) {
-            int mid = left + (right - left) / 2;
-            
-            // Check if mid is the peak element
-            if (arr[mid] > arr[mid - 1] && arr[mid] > arr[mid + 1]) {
-                return arr[mid];
-            }
-            // If mid is in the increasing part, move right
-            else if (arr[mid] > arr[mid - 1] && arr[mid] < arr[mid + 1]) {
-                left = mid + 1;
-            }
-            // If mid is in the decreasing part, move left
-            else {
-                right = mid - 1;
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+
+            // To avoid out-of-bound errors
+            if (mid > 0 && mid < arr.size() - 1) {
+                if (arr[mid] > arr[mid - 1] && arr[mid] > arr[mid + 1])
+                    return arr[mid];
+                else if (arr[mid] > arr[mid - 1])
+                    low = mid + 1;  // go right
+                else
+                    high = mid - 1; // go left
+            } else if (mid == 0) {
+                return arr[0] > arr[1] ? arr[0] : arr[1];
+            } else if (mid == arr.size() - 1) {
+                return arr[arr.size() - 1] > arr[arr.size() - 2] ? arr[arr.size() - 1] : arr[arr.size() - 2];
             }
         }
-        
-        return -1; // Just a fallback, ideally should never reach here
+        return -1; // This should never hit due to problem constraints
     }
 };
+
 
 //{ Driver Code Starts.
 
 int main() {
     int t;
     cin >> t;
+    cin.ignore();
+
     while (t--) {
-        int n, i;
-        cin >> n;
-        int arr[n];
-        for (i = 0; i < n; i++) {
-            cin >> arr[i];
+        vector<int> arr;
+        int value;
+
+        // Read the entire line of integers
+        string line;
+        // cin.ignore(); // Ignore the newline after the test case input
+        getline(cin, line);
+        stringstream ss(line);
+
+        // Parse integers and add them to the vector
+        while (ss >> value) {
+            arr.push_back(value);
         }
+
         Solution ob;
-        auto ans = ob.findMaximum(arr, n);
+        auto ans = ob.findMaximum(arr);
         cout << ans << "\n";
+        cout << "~"
+             << "\n";
     }
     return 0;
 }
