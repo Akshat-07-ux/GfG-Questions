@@ -4,44 +4,52 @@ using namespace std;
 
 
 // } Driver Code Ends
-class Solution{
-public:
-    int findSubString(string str) {
-        unordered_set<char> uniqueChars;  // To store all unique characters
-        for (char c : str) {
-            uniqueChars.insert(c);
-        }
 
-        int totalUniqueChars = uniqueChars.size();  // Total unique characters
-        int left = 0, right = 0;  // Window pointers
-        int minLength = INT_MAX;  // Initialize minimum length to a large value
-        unordered_map<char, int> charCount;  // Count characters in the current window
+class Solution {
+  public:
+    int findSubString(string& str) {
+        int n = str.size();
+        if (n == 0) return 0;
 
-        while (right < str.length()) {
-            // Expand the right end of the window
-            charCount[str[right]]++;
-            right++;
+        // Count distinct characters in the string
+        unordered_set<char> unique_chars(str.begin(), str.end());
+        int total_unique = unique_chars.size();
 
-            // When we have a valid window
-            while (charCount.size() == totalUniqueChars) {
-                // Update minimum length
-                minLength = min(minLength, right - left);
+        // Map to store frequency of characters in current window
+        unordered_map<char, int> window_freq;
+        int min_len = INT_MAX;
 
-                // Shrink the left end of the window
-                charCount[str[left]]--;
-                if (charCount[str[left]] == 0) {
-                    charCount.erase(str[left]);  // Remove from count if it reaches 0
+        int left = 0;
+        int count = 0;
+
+        for (int right = 0; right < n; ++right) {
+            window_freq[str[right]]++;
+
+            // Count how many unique characters are matched
+            if (window_freq[str[right]] == 1) {
+                count++;
+            }
+
+            // When all unique characters are in the window
+            while (count == total_unique) {
+                min_len = min(min_len, right - left + 1);
+
+                // Try to shrink from the left
+                window_freq[str[left]]--;
+                if (window_freq[str[left]] == 0) {
+                    count--;
                 }
                 left++;
             }
         }
 
-        return (minLength == INT_MAX) ? 0 : minLength;  // Return 0 if no window found
+        return min_len;
     }
 };
 
+
 //{ Driver Code Starts.
-// Driver code
+//      Driver code
 int main() {
     int t;
     cin >> t;
@@ -51,6 +59,9 @@ int main() {
         cin >> str;
         Solution ob;
         cout << ob.findSubString(str) << endl;
+
+        cout << "~"
+             << "\n";
     }
     return 0;
 }
