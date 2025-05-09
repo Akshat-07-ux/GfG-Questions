@@ -6,64 +6,62 @@ using namespace std;
 // } Driver Code Ends
 
 
-class Solution
-{
-private:
-    // Helper function to perform the recursive swaps
-    void findMaximumNumHelper(string& str, int k, string& max_num, int index) {
-        // Base case: if no more swaps left or we've reached the end of the string
-        if (k == 0 || index == str.length() - 1) {
-            max_num = max(max_num, str);
-            return;
-        }
-        
-        // Find the maximum digit in the remaining part of the string
-        char max_digit = str[index];
-        for (int i = index + 1; i < str.length(); i++) {
-            if (str[i] > max_digit) {
-                max_digit = str[i];
+
+class Solution {
+ public:
+    string maxNum; // global to store the best result
+    
+    void solve(string &s, int k, int index) {
+        if (k == 0) return;
+
+        char maxDigit = s[index];
+        for (int i = index + 1; i < s.size(); ++i) {
+            if (s[i] > maxDigit) {
+                maxDigit = s[i];
             }
         }
-        
-        // If the current digit is already the maximum, move to the next index
-        if (max_digit == str[index]) {
-            findMaximumNumHelper(str, k, max_num, index + 1);
-            return;
+
+        // If no greater digit found, no need to swap
+        if (maxDigit != s[index]) {
+            k--; // We'll use one swap batch here
         }
-        
-        // Try swapping with each occurrence of the maximum digit
-        for (int i = str.length() - 1; i > index; i--) {
-            if (str[i] == max_digit) {
-                swap(str[index], str[i]);
-                findMaximumNumHelper(str, k - 1, max_num, index + 1);
-                swap(str[index], str[i]); // backtrack
+
+        for (int i = index; i < s.size(); ++i) {
+            if (s[i] == maxDigit) {
+                swap(s[index], s[i]);
+
+                if (s.compare(maxNum) > 0)
+                    maxNum = s;
+
+                solve(s, k, index + 1); // continue with next index
+
+                swap(s[index], s[i]); // backtrack
             }
         }
     }
 
-public:
-    // Function to find the largest number after k swaps
-    string findMaximumNum(string str, int k)
-    {
-        string max_num = str;
-        findMaximumNumHelper(str, k, max_num, 0);
-        return max_num;
+    string findMaximumNum(string &s, int k) {
+        maxNum = s;
+        solve(s, k, 0);
+        return maxNum;
     }
 };
 
+
 //{ Driver Code Starts.
 
-int main()
-{
+int main() {
     int t, k;
     string str;
 
     cin >> t;
-    while (t--)
-    {
+    while (t--) {
         cin >> k >> str;
         Solution ob;
-        cout<< ob.findMaximumNum(str, k) << endl;
+        cout << ob.findMaximumNum(str, k) << endl;
+
+        cout << "~"
+             << "\n";
     }
     return 0;
 }
