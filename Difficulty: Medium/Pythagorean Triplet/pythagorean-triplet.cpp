@@ -1,72 +1,30 @@
-//{ Driver Code Starts
-#include <bits/stdc++.h>
+class Solution {
+  public:
+    bool pythagoreanTriplet(vector<int>& arr) {
+        // Since 1 <= arr[i] <= 1000, max square is 1,000,000
+        unordered_set<int> nums(arr.begin(), arr.end());
 
-using namespace std;
+        // Iterate a and b such that a^2 + b^2 is a perfect square and in nums
+        for (int i = 0; i < arr.size(); ++i) {
+            for (int j = i + 1; j < arr.size(); ++j) {
+                int a2 = arr[i] * arr[i];
+                int b2 = arr[j] * arr[j];
+                int c2 = a2 + b2;
+                int c = (int)sqrt(c2);
 
-// } Driver Code Ends
-//User function template for C++
-class Solution{
-public:
-    // Function to check if the Pythagorean triplet exists or not
-    bool checkTriplet(int arr[], int n) {
-        // Step 1: Create a set to store squares of elements
-        std::unordered_set<int> squares;
-        
-        // Step 2: Find the maximum element
-        int max_element = *std::max_element(arr, arr + n);
-        
-        // Step 3: Create a boolean array to mark present elements
-        std::vector<bool> present(max_element + 1, false);
-        
-        // Step 4: Iterate through the array
-        for (int i = 0; i < n; i++) {
-            // Mark the element as present
-            present[arr[i]] = true;
-            
-            // Add square of the element to the set
-            squares.insert(arr[i] * arr[i]);
-        }
-        
-        // Step 5: Check for Pythagorean triplet
-        for (int i = 1; i <= max_element; i++) {
-            if (!present[i]) continue;
-            
-            for (int j = i + 1; j <= max_element; j++) {
-                if (!present[j]) continue;
-                
-                // Check if i^2 + j^2 is in the set of squares
-                if (squares.find(i*i + j*j) != squares.end()) {
-                    return true;
+                if (c * c == c2 && nums.count(c)) {
+                    // ensure indices are different and c is present
+                    if (c != arr[i] && c != arr[j]) return true;
+
+                    // if c == arr[i] or arr[j], ensure there's at least another one
+                    int count = 0;
+                    if (arr[i] == c) count++;
+                    if (arr[j] == c) count++;
+                    if (count < count_if(arr.begin(), arr.end(), [c](int x){ return x == c; }))
+                        return true;
                 }
             }
         }
-        
-        // No Pythagorean triplet found
         return false;
     }
 };
-
-//{ Driver Code Starts.
-
-int main() {
-    int t;
-    cin >> t;
-    while (t--) {
-        int n, i;
-        cin >> n;
-        int arr[n];
-        for (i = 0; i < n; i++) {
-            cin >> arr[i];
-        }
-        Solution ob;
-        auto ans = ob.checkTriplet(arr, n);
-        if (ans) {
-            cout << "Yes\n";
-        } else {
-            cout << "No\n";
-        }
-    }
-    return 0;
-}
-
-// } Driver Code Ends
