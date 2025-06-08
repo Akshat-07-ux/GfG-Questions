@@ -1,101 +1,56 @@
-//{ Driver Code Starts
-#include<bits/stdc++.h> 
-using namespace std; 
+class Solution {
+   public:
+    // Helper function to add two numeric strings
+    string stringAdd(string a, string b) {
+        string result = "";
+        int carry = 0;
+        int i = a.size() - 1;
+        int j = b.size() - 1;
+        
+        while (i >= 0 || j >= 0 || carry) {
+            int sum = carry;
+            if (i >= 0) sum += a[i--] - '0';
+            if (j >= 0) sum += b[j--] - '0';
+            result = char(sum % 10 + '0') + result;
+            carry = sum / 10;
+        }
+        return result;
+    }
 
-// } Driver Code Ends
+    // Recursive check for sum-string starting at index with two initial lengths
+    bool isSumStringUtil(string &s, int start, int len1, int len2) {
+        string s1 = s.substr(start, len1);
+        string s2 = s.substr(start + len1, len2);
+        
+        // If either has leading zeros (but not '0'), it's invalid
+        if ((s1.size() > 1 && s1[0] == '0') || (s2.size() > 1 && s2[0] == '0'))
+            return false;
 
-class Solution{   
-public:
-    int isSumString(string S){
-        int n = S.length();
+        string sum = stringAdd(s1, s2);
+        int nextIndex = start + len1 + len2;
         
-        // Helper function to add two strings numerically
-        auto sumOfStrings = [](const string& s1, const string& s2) -> string {
-            string result;
-            int i = s1.length() - 1;
-            int j = s2.length() - 1;
-            int carry = 0;
-            
-            while (i >= 0 || j >= 0 || carry > 0) {
-                int digit1 = (i >= 0) ? (s1[i] - '0') : 0;
-                int digit2 = (j >= 0) ? (s2[j] - '0') : 0;
-                
-                int sum = digit1 + digit2 + carry;
-                carry = sum / 10;
-                sum = sum % 10;
-                
-                result = to_string(sum) + result;
-                
-                i--;
-                j--;
-            }
-            
-            return result;
-        };
-        
-        // Helper function to check if a substring matches the sum of two previous ones
-        function<bool(int, int, int)> isSumStringUtil = [&](int start, int len1, int len2) -> bool {
-            // Get the first two substrings
-            string s1 = S.substr(start, len1);
-            string s2 = S.substr(start + len1, len2);
-            
-            // Calculate their sum
-            string sum = sumOfStrings(s1, s2);
-            int sumLen = sum.length();
-            
-            // Check if we've reached the end of the string
-            if (start + len1 + len2 + sumLen > n) {
-                return false;
-            }
-            
-            // Check if the next substring matches the calculated sum
-            if (S.substr(start + len1 + len2, sumLen) != sum) {
-                return false;
-            }
-            
-            // If we've reached the end of the string, it's a valid sum-string
-            if (start + len1 + len2 + sumLen == n) {
-                return true;
-            }
-            
-            // Recursively check for the next set of substrings
-            return isSumStringUtil(start + len1, len2, sumLen);
-        };
-        
-        // Try all possible lengths for first and second substrings
-        for (int i = 1; i < n; i++) {
-            for (int j = 1; j < n - i; j++) {
-                // Skip if second substring has leading zeros (except for "0" itself)
-                if (S[i] == '0' && j > 1) {
-                    continue;
-                }
-                
-                if (isSumStringUtil(0, i, j)) {
-                    return 1;
-                }
+        if (nextIndex + sum.size() > s.size()) return false;
+
+        string s3 = s.substr(nextIndex, sum.size());
+
+        if (sum != s3) return false;
+
+        // If reached end, it's valid
+        if (nextIndex + sum.size() == s.size()) return true;
+
+        // Recur with next segments
+        return isSumStringUtil(s, start + len1, len2, sum.size());
+    }
+
+    bool isSumString(string &s) {
+        int n = s.size();
+        // Try every possible combination of first two numbers
+        for (int len1 = 1; len1 <= n / 2; ++len1) {
+            for (int len2 = 1; len2 <= (n - len1) / 2; ++len2) {
+                if (isSumStringUtil(s, 0, len1, len2))
+                    return true;
             }
         }
-        
-        return 0;
+        return false;
     }
 };
-
-
-//{ Driver Code Starts.
-int main() 
-{ 
-    int t;
-    cin>>t;
-    while(t--)
-    {
-        string S;
-        cin >> S;
-        Solution ob;
-        cout << ob.isSumString(S) << endl;
-    
-cout << "~" << "\n";
-}
-    return 0; 
-} 
-
-// } Driver Code Ends
